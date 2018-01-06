@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>top.mortise</groupId>
+        <artifactId>mortise-base</artifactId>
+        <version>1.5.2.RELEASE</version>
+    </parent>
+    <properties>
+        <powerMonitor.version>1.0-SNAPSHOT</powerMonitor.version>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <modelVersion>4.0.0</modelVersion>
+    <version>1.0-SNAPSHOT</version>
+    <groupId>top.mortise.aliyundns</groupId>
+    <artifactId>mortise_aliyundns</artifactId>
+    <packaging>pom</packaging>
+
+
+</project>
