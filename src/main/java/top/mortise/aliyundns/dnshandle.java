@@ -31,10 +31,14 @@ public class dnshandle  implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
         anylsisDomainSet();
+        int i=0;
         while (true){
+
+            LogHelper.logger().error(++i+"");
             eachDomain();
             Thread.sleep(1000*10);
         }
+        
     }
     ObjectMapper mapper =new ObjectMapper();
     static List<aliyunDomainAndID_secret> domain_list = new ArrayList<>();
@@ -50,8 +54,6 @@ public class dnshandle  implements CommandLineRunner {
                 }
                 LogHelper.logger().info("domain配置文件路径："+file.getAbsolutePath());
                 String domainjson  = FileHelper.readAllStrFile(file.getAbsolutePath());
-//                String domainjson  = FileHelper.readAllStrFile(domaincfg_path);
-//                LogHelper.logger().error("domain配置文件路径："+domaincfg_path);
                 DomainModel[] domainModels = mapper.readValue(domainjson,DomainModel[].class);
                 for(DomainModel domainModel:domainModels){
                     aliyunDomainAndID_secret ads = new aliyunDomainAndID_secret();
