@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>
@@ -46,19 +46,23 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.mortise.utils</groupId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>top.mortise.utils</groupId>
             <artifactId>mortise-utils-netutils</artifactId>
-            <version>${springboot.version}</version>
+            <version>${mortise.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.mortise.utils</groupId>
+            <groupId>top.mortise.utils</groupId>
             <artifactId>mortise-utils-comm</artifactId>
-            <version>${springboot.version}</version>
+            <version>${mortise.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.mortise.utils</groupId>
+            <groupId>top.mortise.utils</groupId>
             <artifactId>mortise-utils-loghelper</artifactId>
-            <version>${springboot.version}</version>
+            <version>${mortise.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.aliyun/aliyun-java-sdk-alidns -->
         <dependency>
@@ -78,50 +82,36 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${springboot.version}</version>
                 <configuration>
-                    <archive>
-                        <!-- 添加index则不从mainfest中读取classpath，而是从Index.list中读取 -->
-                        <!--                         <index>true</index> -->
-                        <manifest>
-                            <mainClass>top.mortise.aliyundns.App</mainClass>
-                            <!-- to create a class path to your dependecies you have to fill true
-                                in this field -->
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <!--<classpathLayoutType>custom</classpathLayoutType> <customClasspathLayout>
-                                lib/$${artifact.groupId}.$${artifact.artifactId}.$${artifact.extension} </customClasspathLayout> -->
-                        </manifest>
-                        <manifestEntries>
-                            <Class-Path>./</Class-Path>
-                        </manifestEntries>
-                    </archive>
-                    <excludes>
-                        <exclude>config/**</exclude>
-                    </excludes>
+                    <!--fork :  如果没有该项配置，肯呢个devtools不会起作用，即应用不会restart -->
+                    <fork>true</fork>
                 </configuration>
+                <!--<executions>-->
+                <!--<execution>-->
+                <!--<goals>-->
+                <!--<goal>repackage</goal>-->
+                <!--</goals>-->
+                <!--</execution>-->
+                <!--</executions>-->
             </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <!-- not append assembly id in release file name -->
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/main/build/package.xml</descriptor>
-                    </descriptors>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
+
         </plugins>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
+
     </build>
 </project>

@@ -10,8 +10,8 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mortise.utils.FileHelper;
-import com.mortise.utils.LogHelper;
+import top.mortise.utils.comm.FileHelper;
+import top.mortise.utils.loghelper.LogHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -53,7 +53,22 @@ public class dnshandle  implements CommandLineRunner {
                     LogHelper.logger().error("没有找到domain配置文件路径");
                 }
                 LogHelper.logger().info("domain配置文件路径："+file.getAbsolutePath());
-                String domainjson  = FileHelper.readAllStrFile(file.getAbsolutePath());
+                String domainjson  ="";
+                List<String> ss = FileHelper.readFileByLines(file.getAbsolutePath());
+                if (ss.size() > 0) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    StringBuffer sb =  new StringBuffer();
+                    for(String s : ss){
+                        if(!s.trim().startsWith("//")){
+                            sb.append(s.trim());
+                        }
+                    }
+                    domainjson=sb.toString();
+                } else {
+                    LogHelper.logger().error("未能读domain配置文件");
+                }
+
+
                 DomainModel[] domainModels = mapper.readValue(domainjson,DomainModel[].class);
                 for(DomainModel domainModel:domainModels){
                     aliyunDomainAndID_secret ads = new aliyunDomainAndID_secret();
@@ -100,6 +115,7 @@ public class dnshandle  implements CommandLineRunner {
                                 upRequest.setType(  r.getType());
                                 upRequest.setValue( ip);
                                 UpdateDomainRecordResponse upResponse = ads.getClient().getAcsResponse(upRequest);
+                                LogHelper.logger().info("设置成功:"+ r.getRR()+"."+ads.getDomain()+";ip:"+ip);
                                // System.Console.WriteLine(upResponse.getRecordId());
                             }
                         }
@@ -118,6 +134,7 @@ public class dnshandle  implements CommandLineRunner {
         }
         catch (Exception ex) {
 
+            LogHelper.logger().error("eachDomain:"+ex.getMessage());
         }
 
     }

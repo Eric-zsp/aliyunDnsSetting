@@ -1,6 +1,6 @@
 package top.mortise.aliyundns;
 
-import com.mortise.utils.netutils.HttpRequestUtil;
+import top.mortise.utils.netutils.HttpRequestUtil;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

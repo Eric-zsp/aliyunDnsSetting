@@ -4,6 +4,17 @@
         <Console name="consolePrint" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
+        <!-- PointLimitCalculation的任何配置都不要改！！！ -->
+        <RollingFile name="fileLog" fileName="${webapp.root}/webLogs/runLog.log"
+                     filePattern="${webapp.root}/webLogs/$${date:yyyy-MM}/%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}[%p] [%t] %-5level %logger{36} - %msg%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+        </RollingFile>
     </appenders>
 
     <loggers>
@@ -11,11 +22,11 @@
         <!--<logger name="com.mortise.user.cas.dao" level="DEBUG" additivity="false">-->
             <!--<appender-ref ref="consolePrint"/>-->
         <!--</logger>-->
-        <logger name="top.mortise.aliyundns" level="DEBUG" additivity="false">
-            <appender-ref ref="consolePrint"/>
-        </logger>
-        <root level="info">
-            <appender-ref ref="consolePrint" />
+        <!--<logger name="top.mortise.aliyundns.**" level="DEBUG" additivity="false">-->
+            <!--<appender-ref ref="fileLog"/>-->
+        <!--</logger>-->
+        <root level="DEBUG">
+            <appender-ref ref="fileLog" />
         </root>
     </loggers>
 </Configuration>
