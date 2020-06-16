@@ -5,6 +5,8 @@ FROM openjdk:8u232-stretch
 #指定作者
 MAINTAINER  Eric
 
+run 'mkdir /data/aliyunDnsSetting'
+
 #文件到镜像中
 COPY  dist/*  /data/aliyunDnsSetting
 
