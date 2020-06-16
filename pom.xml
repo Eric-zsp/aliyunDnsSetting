@@ -3,20 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>top.mortise</groupId>
-        <artifactId>top-mortise</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <groupId>cn.joyconn</groupId>
+        <artifactId>cn-joyconn</artifactId>
+        <version>2.1.6-SNAPSHOT</version>
     </parent>
     <properties>
-        <powerMonitor.version>1.0-SNAPSHOT</powerMonitor.version>
         <java.version>1.8</java.version>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
     <version>1.0-SNAPSHOT</version>
-    <groupId>top.mortise.aliyundns</groupId>
-    <artifactId>mortise_aliyundns</artifactId>
-    <packaging>war</packaging>
+    <groupId>cn.joyconn.aliyundns</groupId>
+    <artifactId>joyconn_aliyundns</artifactId>
+    <packaging>jar</packaging>
     <repositories>
         <repository>
             <id>sonatype-nexus-staging</id>
@@ -39,30 +38,27 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-logging</artifactId>
                 </exclusion>
-                <!--<exclusion>-->
-                <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
-                <!--<groupId>org.springframework.boot</groupId>-->
-                <!--</exclusion>-->
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>top.mortise.utils</groupId>
-            <artifactId>mortise-utils-netutils</artifactId>
-            <version>${mortise.version}</version>
+            <groupId>cn.joyconn.utils</groupId>
+            <artifactId>joyconn-utils-netutils</artifactId>
+            <version>${joyconn.version}</version>
         </dependency>
         <dependency>
-            <groupId>top.mortise.utils</groupId>
-            <artifactId>mortise-utils-comm</artifactId>
-            <version>${mortise.version}</version>
+            <groupId>cn.joyconn.utils</groupId>
+            <artifactId>joyconn-utils-comm</artifactId>
+            <version>${joyconn.version}</version>
         </dependency>
         <dependency>
-            <groupId>top.mortise.utils</groupId>
-            <artifactId>mortise-utils-loghelper</artifactId>
-            <version>${mortise.version}</version>
+            <groupId>cn.joyconn.utils</groupId>
+            <artifactId>joyconn-utils-loghelper</artifactId>
+            <version>${joyconn.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.aliyun/aliyun-java-sdk-alidns -->
         <dependency>
@@ -77,41 +73,102 @@
             <artifactId>aliyun-java-sdk-core</artifactId>
             <version>3.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.4.3</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
+
     <build>
         <plugins>
+
+
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${springboot.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <!--fork :  如果没有该项配置，肯呢个devtools不会起作用，即应用不会restart -->
-                    <fork>true</fork>
+                    <excludes>
+                        <exclude>*.**</exclude>
+                        <!--<exclude>*/*.xml</exclude>-->
+                        <!--<exclude>*/*.properties</exclude>-->
+                        <!--<exclude>*/*.fs</exclude>-->
+                    </excludes>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <!--MANIFEST.MF 中 Class-Path 加入前缀-->
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <!--jar包不包含唯一版本标识-->
+                            <useUniqueVersions>false</useUniqueVersions>
+                            <!--指定入口类-->
+                            <mainClass>cn.joyconn.aliyundns.App</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <!--MANIFEST.MF 中 Class-Path 加入资源文件目录-->
+                            <Class-Path>./resources/</Class-Path>
+                        </manifestEntries>
+                    </archive>
+                    <outputDirectory>${basedir}/dist</outputDirectory>
                 </configuration>
-                <!--<executions>-->
-                <!--<execution>-->
-                <!--<goals>-->
-                <!--<goal>repackage</goal>-->
-                <!--</goals>-->
-                <!--</execution>-->
-                <!--</executions>-->
+            </plugin>
+
+            <!--拷贝依赖 copy-dependencies-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${basedir}/dist/lib/
+                            </outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--拷贝资源文件 copy-resources-->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <!-- <include>*.properties</include> -->
+                                    </includes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${basedir}/dist/resources</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                </executions>
             </plugin>
 
 
         </plugins>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                    <include>**/*.properties</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-        </resources>
+
+
 
     </build>
 </project>
