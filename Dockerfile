@@ -7,7 +7,7 @@ MAINTAINER  Eric
 
 # WORKDIR /data
 
-RUN  mkdir /data/aliyunDnsSetting/
+VOLUME  /data/
 
 #文件到镜像中
 COPY  dist/*  /data/aliyunDnsSetting/
